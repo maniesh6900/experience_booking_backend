@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "./src/generated/prisma"
+  engine   = "classic"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model booking {
+  id           String     @id @default(uuid()) @map("_id")
+  fullName     String
+  email        String
+  experienceId String
+  experience   experience @relation(fields: [experienceId], references: [id])
+  date         DateTime
+  timeSlot     String
+  totalPrice   String
+  promoCode    PromoCode
+}
+
+model experience {
+  id          String    @id @default(uuid()) @map("_id")
+  img_url     String
+  title       String
+  description String
+  price       Float
+  duration    Int
+  booking     booking[]
+}
+
+enum PromoCode {
+  SAVE10
+  FLAT100
+}
